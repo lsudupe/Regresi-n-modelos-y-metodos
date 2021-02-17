@@ -9,22 +9,46 @@ output: word_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r}
+# Función para cargar todos los paquetes necesarios
+LoadLibraries <- function() {
+  myLibraries <- c("faraway")
+  invisible(lapply(myLibraries, library, character.only = TRUE))
+}
+LoadLibraries()
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+EJERCICIOS FARADAY.
+
+1. The dataset teengamb concerns a study of teenage gambling in Britain. Make a
+numerical and graphical summary of the data, commenting on any features that
+you find interesting. Limit the output you present to a quantity that a busy 
+reader would find sufficient to get a basic understanding of the data.
+
+```{r}
+# Cargamos el paquete
+data <- teengamb
+rownames(data) <- c(1:nrow(data))
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+#Vamos a ver los datos que lo componen
+head(data)
+dim(data) #número de filas y columnas
+str(data) #estructura de las variables
+```
+Vemos que tenemos 5 columnas y 47 filas. Todos los valores son numericos, vemos
+que la variable sex es categorica
+
+```{r}
+data$sex <- factor(data$sex, levels = c(0,1), labels = c("man", "woman"))
+summary(data)
+```
+
+
+
+
