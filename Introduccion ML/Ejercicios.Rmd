@@ -59,16 +59,21 @@ sum(is.na(data))
 
 Vamos a realizar algunas representaciónes para estudiar los datos
 ```{r}
-#Veamos a ver los valores de gamble  segun el sexo
+#Veamos a ver los valores de gamble y status  segun el sexo
 
+par(mfrow=c(1,2))
 boxplot(data$gamble ~ data$sex, xlab= "Sexo", ylab="Gasto en el juego", 
+        col= c(col= rgb(red = 0, green = 0, blue = 1, alpha= 0.45),
+               col= rgb(red = 1, green = 0, blue = 0, alpha = 0.45)))
+
+boxplot(data$status ~ data$sex, xlab= "Sexo", ylab="Estatus socioeconomico", 
         col= c(col= rgb(red = 0, green = 0, blue = 1, alpha= 0.45),
                col= rgb(red = 1, green = 0, blue = 0, alpha = 0.45)))
 
 ```
 
 Vemos que hay una diferencia considerable, para el grupo de los hombres tenemos 
-valores mayores.
+mayores valores tanto en el gasto en el juego como en el estatus socioeconomico
 
 ```{r}
 #Veamos como se distribuye los ingresos dependiendo el sexo
@@ -80,8 +85,20 @@ theme_classic() + theme(legend.position="top")
 Vemos que hay mayor densidad de mujeres que tienen ingresos mas bajos
 
 ```{r}
+#Vamos a ver la relación entre la puntuación verbal y el gasto en el juego por 
+#sexos
 
+ggplot(data = data) +
+  geom_point(aes(verbal, gamble, colour = sex)) +
+  facet_grid(~sex)
 
+g1 <- ggplot(teengamb, aes (x = income, y = gamble, color = sex)) + geom_point()+
+  theme(legend.position = "top", legend.direction = "horizontal")
+ 
+g2 <- ggplot(teengamb, aes (x = income, y = gamble)) + geom_point(size = 1) + 
+  facet_grid( ~ sex)
+
+plot_grid(g1, g2, nrow = 1)
 ```
 
 
