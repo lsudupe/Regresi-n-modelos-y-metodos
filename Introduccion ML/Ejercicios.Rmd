@@ -120,8 +120,27 @@ ggplot(data2, aes(state), width=2)  + geom_bar(aes(fill=race)) + theme_classic()
 
 ```
 
+Se puede ver que la proporcion de personas de raza negra y blanca esta muy 
+desajustado
 
+```{r}
+#Veamos como se distribuye la cantidad de ganancias dependiendo de la raza y de
+#la zona
 
+par(mfrow=c(2,1))
+data2%>%
+ggplot(aes(x = wage, fill = race)) + geom_density(alpha=0.4) +
+scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9")) +
+theme_classic() + theme(legend.position="top")
 
+data2%>%
+ggplot(aes(x = wage, fill = state)) + geom_density(alpha=0.4) +
+scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9", "#009E73")) +
+theme_classic() + theme(legend.position="top")
+```
+
+Vemos que hay mayor densidad en cuanto a menor ingresos en la raza negra. A su 
+vez, en cuanto a los distritos se mantiene bstante igualado con una densidad 
+mayor en menor ingresos en el sur.
 
 
