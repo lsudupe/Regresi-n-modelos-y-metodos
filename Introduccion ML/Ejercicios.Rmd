@@ -143,4 +143,39 @@ Vemos que hay mayor densidad en cuanto a menor ingresos en la raza negra. A su
 vez, en cuanto a los distritos se mantiene bstante igualado con una densidad 
 mayor en menor ingresos en el sur.
 
+```{r}
+ggplot(data2, aes(x = race, y = educ)) + geom_boxplot(aes(fill = race), alpha = 0.4) +
+  theme_classic() + labs(x = "Raza", y = "Educación") + ylim(0, 30)
+```
+Aunque tenemos outliers, vemos que los niveles de educación estan por debajo en
+la raza negra
+
+
+EJERCICIOS CARMONA.
+
+3. Consideremos el problema de tráfico planteado en el apartado 1.2 de este 
+capítulo, con la variable independiente densidad y la variable dependiente raíz cuadrada de la velocidad. Con los datos proporcionados en la tabla 1.1
+
+dens <- c(12.7,17.0,66.0,50.0,87.8,81.4,75.6,66.2,81.1,62.8,77.0,89.6,
+18.3,19.1,16.5,22.2,18.6,66.0,60.3,56.0,66.3,61.7,66.6,67.8)
+vel <- c(62.4,50.7,17.1,25.9,12.4,13.4,13.7,17.9,13.8,17.9,15.8,12.6,
+51.2,50.8,54.7,46.5,46.3,16.9,19.8,21.2,18.3,18.0,16.6,18.3)
+rvel <- sqrt(vel)
+
+realizar el siguiente proceso:
+
+(a) Dibujar la nube de puntos y la recta que pasa por los puntos (12.7,√62.4) y (87.8,√12.4).
+Dibujar el gráfico de los residuos con la densidad y el gráfico con las 
+predicciones. Calcular la suma de cuadrados de los residuos.
+
+(b) Hallar la recta de regresión simple. Dibujar el gráfico de los residuos con 
+la densidad y el gráfico con las predicciones. Calcular la suma de cuadrados de 
+los residuos.
+
+(c) Mejorar el modelo anterior considerando una regresión parabólica. Dibujar el gráfico de los residuos con la densidad y el gráfico con las predicciones. 
+Calcular la suma de cuadrados de los residuos.
+
+
+(d) Calcular la capacidad de la carretera o punto de máximo flujo. Recordar que
+flujo = vel × densidad.
 
