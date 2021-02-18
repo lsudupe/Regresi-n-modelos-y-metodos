@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 # Función para cargar todos los paquetes necesarios
 LoadLibraries <- function() {
-  myLibraries <- c("faraway", "ggplot2", "dplyr", "cowplot")
+  myLibraries <- c("faraway", "ggplot2", "dplyr", "cowplot", "scales")
   invisible(lapply(myLibraries, library, character.only = TRUE))
 }
 LoadLibraries()
@@ -22,7 +22,7 @@ LoadLibraries()
 
 
 ```{r}
-install.packages("cowplot")
+install.packages("scales")
 ```
 
 
@@ -98,9 +98,27 @@ Observamos que para valores de puntuación verbal entre 4 y 8 las mujeres tienen
 un gasto mensual menor en el juego.
 
 
+2. The dataset uswages is drawn as a sample from the Current Population Survey 
+in 1988. Make a numerical and graphical summary of the data as in the previous question.
+
+```{r}
+data2 <- uswages
+head(data2)
+
+str(data2)
+
+```
+```{r}
+summary(data2)
+```
+
+Vamos a realizar algunas modificaciones para mayor entendimiento de los datos.
 
 
+```{r}
+ggplot(data2, aes(state), width=2)  + geom_bar(aes(fill=race)) + theme_classic()
 
+```
 
 
 
