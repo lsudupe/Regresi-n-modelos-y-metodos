@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 # Función para cargar todos los paquetes necesarios
 LoadLibraries <- function() {
-  myLibraries <- c("faraway", "ggplot2", "dplyr")
+  myLibraries <- c("faraway", "ggplot2", "dplyr", "cowplot")
   invisible(lapply(myLibraries, library, character.only = TRUE))
 }
 LoadLibraries()
@@ -22,7 +22,7 @@ LoadLibraries()
 
 
 ```{r}
-install.packages("dplyr")
+install.packages("cowplot")
 ```
 
 
@@ -88,18 +88,14 @@ Vemos que hay mayor densidad de mujeres que tienen ingresos mas bajos
 #Vamos a ver la relación entre la puntuación verbal y el gasto en el juego por 
 #sexos
 
-ggplot(data = data) +
-  geom_point(aes(verbal, gamble, colour = sex)) +
-  facet_grid(~sex)
-
-g1 <- ggplot(teengamb, aes (x = income, y = gamble, color = sex)) + geom_point()+
+ggplot(data, aes(x= verbal, y=gamble, color = sex)) + geom_point()+
   theme(legend.position = "top", legend.direction = "horizontal")
- 
-g2 <- ggplot(teengamb, aes (x = income, y = gamble)) + geom_point(size = 1) + 
-  facet_grid( ~ sex)
+         
 
-plot_grid(g1, g2, nrow = 1)
+
 ```
+Observamos que para valores de puntuación verbal entre 4 y 8 las mujeres tienen 
+un gasto mensual menor en el juego.
 
 
 
