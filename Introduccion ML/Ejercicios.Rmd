@@ -219,21 +219,28 @@ SCE
 la densidad y el gráfico con las predicciones. Calcular la suma de cuadrados de 
 los residuos.
 
+```{r}
+#Hallamos la recta
+reg_lin_simple <- lm(rvel ~ dens)
+reg_lin_simple
 
+#Hallamos los residuos y las predicciones
+residuos_simple <- reg_lin_simple$residual
+predicciones_simple <- rvel - residuos_simple
 
+#Dibujamos las graficas
+par(mfrow=c(1,2))
+plot(dens, residuos_simple, xlab="Densidad", ylab="Residuos", ylim=c(-0.6,0.6))
+abline(h=0,col="red")
+plot(predicciones_simple, residuos_simple, xlba="Densidad", ylab ="Predicciones"
+     , ylim=c(-0.6,0.6))
+abline(h=0,col="red")
 
-
-
-
-
-
-
-
-
-
-
-
-
+#Calculamos suma de cuadrados de los residuos
+SCE_simple <- sum((residuos_simple)^2)
+SCE_simple
+```
+Estan mas cerca del 0 pero siguen teniendo una tendencia.
 
 
 (c) Mejorar el modelo anterior considerando una regresión parabólica. Dibujar el gráfico de los residuos con la densidad y el gráfico con las predicciones. 
