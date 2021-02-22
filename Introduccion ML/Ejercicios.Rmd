@@ -154,7 +154,8 @@ la raza negra
 EJERCICIOS CARMONA.
 
 3. Consideremos el problema de tráfico planteado en el apartado 1.2 de este 
-capítulo, con la variable independiente densidad y la variable dependiente raíz cuadrada de la velocidad. Con los datos proporcionados en la tabla 1.1
+capítulo, con la variable independiente densidad y la variable dependiente raíz 
+cuadrada de la velocidad. Con los datos proporcionados en la tabla 1.1
 
 ```{r}
 dens <- c(12.7,17.0,66.0,50.0,87.8,81.4,75.6,66.2,81.1,62.8,77.0,89.6,
@@ -166,7 +167,8 @@ rvel <- sqrt(vel)
 
 realizar el siguiente proceso:
 
-(a) Dibujar la nube de puntos y la recta que pasa por los puntos (12.7,√62.4) y (87.8,√12.4).
+(a) Dibujar la nube de puntos y la recta que pasa por los puntos (12.7,√62.4) y
+(87.8,√12.4).
 Dibujar el gráfico de los residuos con la densidad y el gráfico con las 
 predicciones. Calcular la suma de cuadrados de los residuos.
 
@@ -244,7 +246,8 @@ Estan mas cerca del 0 pero siguen teniendo una tendencia. La suma de los
 cuadrados de los residuos se ha reducido
 
 
-(c) Mejorar el modelo anterior considerando una regresión parabólica. Dibujar el gráfico de los residuos con la densidad y el gráfico con las predicciones. 
+(c) Mejorar el modelo anterior considerando una regresión parabólica. Dibujar 
+el gráfico de los residuos con la densidad y el gráfico con las predicciones. 
 Calcular la suma de cuadrados de los residuos.
 
 ```{r}
@@ -277,5 +280,66 @@ flujo = vel × densidad.
 Para encontrar el punto maximo, tenemos que representar la funcion del flujo 
 respecto de la densidad. Una vez que tenemos la curva, encontrar cuando la 
 derivada vale 0. No se como tendria que hacerlo en R.
+
+
+4. La siguiente tabla contiene los mejores tiempos conseguidos en algunas 
+pruebas de velocidad en los Juegos Olímpicos de Atlanta:
+
+```{r}
+distancia <- c(100, 200, 400, 800, 1500, 5000, 10000, 42192)
+tiempo_h <- c(9.84, 19.32, 43.19, 102.58, 215.78, 787.96, 1627.34, 7956)
+tiempo_m <- c(10.94, 22.12, 48.25, 117.73, 240.83, 899.88, 1861.63, 8765.00)
+```
+
+Si tomamos como variable regresora o independiente la distancia (metros) y como 
+variable respuesta o dependiente el tiempo (segundos):
+
+(a) Calcular la recta de regresión simple con los datos de los hombres y 
+dibujarla. Dibujar el gráfico de los residuos con la distancia y el gráfico con
+las predicciones. Calcular la suma de cuadrados de los residuos y el R2.
+
+```{r}
+#Recta de regresión
+reg_sim_hombres <- lm(tiempo_h ~  distancia)
+plot(distancia, tiempo_h, xlab= "Distancia", 
+                      ylab="Tiempo hombres")
+abline(reg_sim_hombres, col="red")
+
+#Hallamos los residuos y las predicciones
+e <- reg_sim_hombres$residuals
+pred <- tiempo_h - e
+
+#Dibujamos las graficas
+par(mfrow=c(1,2))
+plot(distancia, e, xlab="Distancia", ylab="Residuos", ylim=c(-100,100))
+abline(h=0,col="red")
+plot(pred, e, xlba="Distancia", ylab ="Predicciones"
+     , ylim=c(-100,100))
+abline(h=0,col="red")
+
+#Calculamos suma de cuadrados de los residuos
+SCE_h <- sum((e)^2)
+SCE_h
+```
+
+
+(b) Repetir el apartado anterior utilizando los logaritmos de las variables 
+tiempo y distancia.
+
+```{r}
+
+```
+
+
+(c) Repetir los dos apartados anteriores utilizando los datos de las mujeres.
+
+
+
+
+
+
+
+
+
 
 
