@@ -182,33 +182,59 @@ reg_lin
 
 ```{r}
 #Dibujamos la nube de puntos y añadimos la recta que pasa por los puntos
-plot(rvel~dens)
+plot(rvel~dens,xlim=c(0 ,100), ylim=c(0,11))
 abline(reg_lin, col="red")
-#abline(a =8.6397, b =-0.0583, col="red", lwd=3, lty=2 )
 
 ```
+
 ```{r}
+
 #Dibujamos el grafico de residuos vs densidad y residuos vs predicciones
-#par(mfrow=c(2,1))
+#Calculamos las predicciones con los coeficientes de la recta que pasa por los 
+#puntos
 
-#Calculamos los residuos
-e <- reg_lin$residuals
+predicciones <- reg_lin$coef[1] + reg_lin$coef[2] * densidad
 
-#Calculamos las predicciones
-predicciones <- rvel - e
-predicciones
+#Calculamos los residuos 
+e <- rvel - predicciones
+
+par(mfrow=c(1,2))
+plot(dens, e, xlab="Densidad", ylab="Residuos", ylim=c(-0.8,0.8))
+abline(h=0,col="red")
+plot(predicciones, e, xlba="Densidad", ylab ="Predicciones", ylim=c(-0.8,0.8))
+abline(h=0,col="red")
+```
+Tenemos un patron de dispersión no aleatorio en los residuos, esto indica que no
+se cumple el supuesto de varianza constante en los errores del modelo. Tenemos
+una tendencia de abanico. 
+
+```{r}
+#Calculamos la suma de los cuadrados del residuo
+SCE <- sum((e)^2)
+SCE
 
 ```
-
-
-
-
-
-
 
 (b) Hallar la recta de regresión simple. Dibujar el gráfico de los residuos con 
 la densidad y el gráfico con las predicciones. Calcular la suma de cuadrados de 
 los residuos.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 (c) Mejorar el modelo anterior considerando una regresión parabólica. Dibujar el gráfico de los residuos con la densidad y el gráfico con las predicciones. 
 Calcular la suma de cuadrados de los residuos.
