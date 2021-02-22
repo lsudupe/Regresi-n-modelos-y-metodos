@@ -271,13 +271,11 @@ SCE_para
 
 ```
 
-
-
-
-
-
-
-
 (d) Calcular la capacidad de la carretera o punto de máximo flujo. Recordar que
 flujo = vel × densidad.
+
+Para encontrar el punto maximo, tenemos que representar la funcion del flujo 
+respecto de la densidad. Una vez que tenemos la curva, encontrar cuando la 
+derivada vale 0. No se como tendria que hacerlo en R.
+
 
