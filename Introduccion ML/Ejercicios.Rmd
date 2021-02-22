@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 # Función para cargar todos los paquetes necesarios
 LoadLibraries <- function() {
-  myLibraries <- c("faraway", "ggplot2", "dplyr", "cowplot", "scales")
+  myLibraries <- c("faraway", "ggplot2", "dplyr", "cowplot", "scales", "aplot")
   invisible(lapply(myLibraries, library, character.only = TRUE))
 }
 LoadLibraries()
@@ -22,7 +22,7 @@ LoadLibraries()
 
 
 ```{r}
-install.packages("scales")
+install.packages("aplot")
 ```
 
 
@@ -171,15 +171,39 @@ Dibujar el gráfico de los residuos con la densidad y el gráfico con las
 predicciones. Calcular la suma de cuadrados de los residuos.
 
 ```{r}
+# Vamos a calcular la ecuación de la recta que pasa por los puntos
 x <- c(12.7, 87.8)
 y <- sqrt(c(62.4, 12.4))
-plot(x,y)
-recta <- lm(x,y)
-
-#Tenemos ((x-x1)/(x2-x1)) = ((y-y1)/(y2-y1))
-#((x-12.7)/(62.4-12.7)) = ((y-raiz(87.8))/(raiz(12.4)-raiz(87.8)))
+reg_lin <- lm(y ~ x)
+reg_lin
 
 ```
+
+
+```{r}
+#Dibujamos la nube de puntos y añadimos la recta que pasa por los puntos
+plot(rvel~dens)
+abline(reg_lin, col="red")
+#abline(a =8.6397, b =-0.0583, col="red", lwd=3, lty=2 )
+
+```
+```{r}
+#Dibujamos el grafico de residuos vs densidad y residuos vs predicciones
+#par(mfrow=c(2,1))
+
+#Calculamos los residuos
+e <- reg_lin$residuals
+
+#Calculamos las predicciones
+predicciones <- rvel - e
+predicciones
+
+```
+
+
+
+
+
 
 
 (b) Hallar la recta de regresión simple. Dibujar el gráfico de los residuos con 
