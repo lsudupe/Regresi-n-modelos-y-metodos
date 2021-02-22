@@ -320,6 +320,9 @@ abline(h=0,col="red")
 #Calculamos suma de cuadrados de los residuos
 SCE_h <- sum((e)^2)
 SCE_h
+
+#R2 es "Multiple R-squared"
+summary(reg_sim_hombres)
 ```
 
 
@@ -327,13 +330,96 @@ SCE_h
 tiempo y distancia.
 
 ```{r}
+#Calculamos los logaritmos
+log_distancia <- log(distancia)
+log_tiempo_h <- log(tiempo_h)
 
+#Recta de regresión
+reg_sim_hombres_log <- lm(log_tiempo_h ~log_distancia)
+plot(log_distancia, log_tiempo_h, xlab= "Logaritmos distancia", 
+                      ylab="Logaritmos tiempo hombres")
+abline(reg_sim_hombres_log, col="red")
+
+#Hallamos los residuos y las predicciones
+e_log <- reg_sim_hombres_log$residuals
+pred_log <- log_tiempo_h - e_log
+
+#Dibujamos las graficas
+par(mfrow=c(1,2))
+plot(log_distancia, e_log, xlab="Log_distancia", ylab="Residuos", ylim=c(-0.4,0.4))
+abline(h=0,col="red")
+plot(pred_log, e_log, xlba="Log_distancia", ylab ="Predicciones"
+     , ylim=c(-0.4,0.4))
+abline(h=0,col="red")
+
+#Calculamos suma de cuadrados de los residuos
+SCE_h <- sum((e_log)^2)
+SCE_h
+
+#R2 es "Multiple R-squared"
+summary(reg_sim_hombres_log)
 ```
 
 
 (c) Repetir los dos apartados anteriores utilizando los datos de las mujeres.
 
+```{r}
+#Recta de regresión
+reg_sim_mujeres <- lm(tiempo_m ~  distancia)
+plot(distancia, tiempo_m, xlab= "Distancia", 
+                      ylab="Tiempo mujeres")
+abline(reg_sim_mujeres, col="red")
 
+#Hallamos los residuos y las predicciones
+e <- reg_sim_mujeres$residuals
+pred <- tiempo_m - e
+
+#Dibujamos las graficas
+par(mfrow=c(1,2))
+plot(distancia, e, xlab="Distancia", ylab="Residuos", ylim=c(-100,100))
+abline(h=0,col="red")
+plot(pred, e, xlba="Distancia", ylab ="Predicciones"
+     , ylim=c(-100,100))
+abline(h=0,col="red")
+
+#Calculamos suma de cuadrados de los residuos
+SCE_h <- sum((e)^2)
+SCE_h
+
+#R2 es "Multiple R-squared"
+summary(reg_sim_mujeres)
+```
+
+
+```{r}
+#Calculamos los logaritmos
+log_tiempo_m <- log(tiempo_m)
+
+#Recta de regresión
+reg_sim_mujeres_log <- lm(log_tiempo_m ~log_distancia)
+plot(log_distancia, log_tiempo_m, xlab= "Logaritmos distancia", 
+                      ylab="Logaritmos tiempo mujeres")
+abline(reg_sim_mujeres_log, col="red")
+
+#Hallamos los residuos y las predicciones
+e_log <- reg_sim_mujeres_log$residuals
+pred_log <- log_tiempo_m - e_log
+
+#Dibujamos las graficas
+par(mfrow=c(1,2))
+plot(log_distancia, e_log, xlab="Log_distancia", ylab="Residuos", ylim=c(-0.4,0.4))
+abline(h=0,col="red")
+plot(pred_log, e_log, xlba="Log_distancia", ylab ="Predicciones"
+     , ylim=c(-0.4,0.4))
+abline(h=0,col="red")
+
+#Calculamos suma de cuadrados de los residuos
+SCE_h <- sum((e_log)^2)
+SCE_h
+
+#R2 es "Multiple R-squared"
+summary(reg_sim_mujeres_log)
+```
 
 
 
