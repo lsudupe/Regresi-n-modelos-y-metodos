@@ -240,11 +240,42 @@ abline(h=0,col="red")
 SCE_simple <- sum((residuos_simple)^2)
 SCE_simple
 ```
-Estan mas cerca del 0 pero siguen teniendo una tendencia.
+Estan mas cerca del 0 pero siguen teniendo una tendencia. La suma de los 
+cuadrados de los residuos se ha reducido
 
 
 (c) Mejorar el modelo anterior considerando una regresión parabólica. Dibujar el gráfico de los residuos con la densidad y el gráfico con las predicciones. 
 Calcular la suma de cuadrados de los residuos.
+
+```{r}
+#Ajustamos a una regresion polinomica
+reg_parabolica <- lm(rvel ~ poly(dens,2))
+reg_parabolica
+
+#Hallamos los residuos y las predicciones
+residuos_para <- reg_parabolica$residual
+predicciones_para <- rvel - residuos_para
+
+#Dibujamos las graficas
+par(mfrow=c(1,2))
+plot(dens, residuos_para, xlab="Densidad", ylab="Residuos", ylim=c(-1,1))
+abline(h=0,col="red")
+plot(predicciones_para, residuos_para, xlba="Densidad", ylab ="Predicciones"
+     , ylim=c(-1,1))
+abline(h=0,col="red")
+
+#Calculamos suma de cuadrados de los residuos
+SCE_para <- sum((residuos_para)^2)
+SCE_para
+
+
+```
+
+
+
+
+
+
 
 
 (d) Calcular la capacidad de la carretera o punto de máximo flujo. Recordar que
