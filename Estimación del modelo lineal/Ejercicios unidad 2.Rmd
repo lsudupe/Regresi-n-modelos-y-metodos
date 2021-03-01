@@ -73,6 +73,20 @@ lm$coefficients["sex"]
   entre "expenditure on gambling in punds per year" es 22.12 "pounds" distinta
   para los hombres que para las mujeres. Menor para las mujeres (sex=1)
   
+
+## 2.
+  The dataset uswages is drawn as a sample from the Current Population Survey in
+  1988. 
+  a) Fit a model with weekly wages as the response and years of education and
+  experience as predictors. 
+  b) Report and give a simple interpretation to the regression coefficient for 
+  years of education. Now fit the same model but with logged weekly wages. 
+  c)Give an interpretation to the regression coefficient for   years of education.
+  Which interpretation is more natural?
+```{r}
+lm2 <- lm(wage ~ educ + exper, data = uswages)
+summary(lm2)
+```
   
   
   
