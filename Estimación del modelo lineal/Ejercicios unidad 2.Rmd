@@ -1,0 +1,81 @@
+---
+title: "Estimación del modelo lineal ejercicios"
+author: "Laura Sudupe Medinilla"
+date: "1/3/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r setup, echo = FALSE, message = FALSE}
+# Función para cargar todos los paquetes necesarios
+LoadLibraries <- function() {
+  myLibraries <- c("faraway")
+  invisible(lapply(myLibraries, library, character.only = TRUE))
+}
+LoadLibraries()
+```
+
+# Ejercicios faraway
+
+## 1.
+  The dataset teengamb concerns a study of teenage gambling in Britain. Fit a 
+  regression model with the expenditure on gambling as the response and the sex, 
+  status, income and verbal score as predictors. Present the output.
+```{r}
+#ajustamos los datos al modelo
+lm <- lm(gamble ~ sex + status + income + verbal, data=teengamb )
+lmsum <- summary(lm)
+lmsum
+```
+  (a) What percentage of variation in the response is explained by these 
+  predictors?
+```{r}
+#El coeficiente de determinación R^2 es igual al cuadrado de la correlación del 
+#coeficiente. Cuando se expresa en porcentaje, R^2 representa el porcentaje de
+#variación en la variable dependiente y puede ser explicado mediante la 
+#variación en la variable independiente x mediante la linea de regreión.
+
+(lmsum$r.squared)*100
+```
+    (b) Which observation has the largest (positive) residual? Give the case 
+  number.
+```{r}
+residuos <- lmsum$residuals
+max(residuos)      #valor residuo maximo
+which.max(residuos) #observacion con el maximo valor
+```
+  (c) Compute the mean and median of the residuals.
+```{r}
+#Han de dar valores entorno al cero, el hecho de que no den es debido a errores
+#de calculo
+mean(residuos)
+median(residuos)
+```
+  (d) Compute the correlation of the residuals with the fitted values.
+```{r}
+cor(fitted(lm), resid(lm))
+```
+  (e) Compute the correlation of the residuals with the income.
+```{r}
+cor(resid(lm), teengamb$income)
+```
+  
+  (f) For all other predictors held constant, what would be the difference in 
+  predicted expenditure on gambling for a male compared to a female?
+```{r}
+lmsum
+lm$coefficients["sex"]
+```
+  Estos datos nos indican la pendiente de la recta, por lo tanto, la diferencia
+  entre "expenditure on gambling in punds per year" es 22.12 "pounds" distinta
+  para los hombres que para las mujeres. Menor para las mujeres (sex=1)
+  
+  
+  
+  
+  
+  
+  
