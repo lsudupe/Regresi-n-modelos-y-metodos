@@ -79,17 +79,40 @@ lm$coefficients["sex"]
   1988. 
   a) Fit a model with weekly wages as the response and years of education and
   experience as predictors. 
-  b) Report and give a simple interpretation to the regression coefficient for 
-  years of education. Now fit the same model but with logged weekly wages. 
-  c)Give an interpretation to the regression coefficient for   years of education.
-  Which interpretation is more natural?
+  
 ```{r}
 lm2 <- lm(wage ~ educ + exper, data = uswages)
 summary(lm2)
 ```
+  b) Report and give a simple interpretation to the regression coefficient for 
+  years of education. Now fit the same model but with logged weekly wages. 
+```{r}
+lm2$coefficients
+```
+  El ajuste no es muy bueno, tenemos un $R^2$ bajo y un error estandar elevado.
   
+  Los coeficientes nos indican que el sueldo (wage) depende de la educación 
+  recibida y la experiencia. La relación es de 51.18 unidades mas de educación 
+  por cada wage y 9.77 unidades mas de experiencia por cada wage. Esto quiere
+  decir que hay un aumento de 51.18 unidades en el salario por cada año de 
+  educación y un aumento de 9.77 unidades en el salario por cada año de 
+  experiencia.
   
+  $$wage = -242.8 + 51.17educ + 9.77expe$$
   
-  
-  
+```{r}
+#modificamos los datos de waeg logaritmicamente
+lmlog2 <- lm(log(wage) ~ educ + exper, data = uswages)
+summary(lmlog2)
+lmlog2$coefficients
+```
+ Vemos que $R^2$ ha aumentado ligeramente y el error estandar a bajado 
+ considerablemente.
+ 
+ La relación entre los coeficientes es la siguiente
+ 
+ $$\log(wage) = 4.65 + 0.09educ + 0.02expe$$
+  c)Give an interpretation to the regression coefficient for years of education.
+  Which interpretation is more natural?
+  No entiendo lo que se me pide
   
