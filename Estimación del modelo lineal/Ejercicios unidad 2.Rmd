@@ -116,3 +116,63 @@ lmlog2$coefficients
   Which interpretation is more natural?
   No entiendo lo que se me pide
   
+  
+## 4.
+  The dataset prostate comes from a study on 97 men with prostate cancer who 
+  were due to receive a radical prostatectomy. Fit a model with lpsa as the 
+  response and lcavol as the predictor. Record the residual standard error and 
+  the R2
+```{r}
+lm4 <- lm(lpsa ~ lcavol, data=prostate)
+summary(lm4)
+```
+```{r}
+#Error estandar de los residups
+summary(lm4)$sigma
+
+#R^2, coeficiente de determinación
+summary(lm4)$r.squared
+```
+  . Now add lweight, svi, lbph, age, lcp, pgg45 and gleason to the model one at 
+  a time. For each model record the residual standard error and the R2
+```{r}
+lm4.2 <- update(lm4,. ~. + lweight)
+
+lm4.3 <- update(lm4.2,. ~. + svi)
+
+lm4.4 <- update(lm4.3,. ~. + lbph)
+
+lm4.5 <- update(lm4.4,. ~. + age)
+
+lm4.6 <- update(lm4.5,. ~. + lcp)
+
+lm4.7 <- update(lm4.6,. ~. + pgg45)
+
+lm4.8 <- update(lm4.7,. ~. + gleason)
+
+ 
+```
+  
+  
+  
+  . Plot the trends in these two statistics.
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
