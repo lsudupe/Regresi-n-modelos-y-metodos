@@ -184,14 +184,81 @@ ggplot(data=data, aes(x=variables, y=value, colour=variable)) +
         
 ```
   
+## 5.
+  Using the prostate data, plot lpsa against lcavol. Fit the regressions of lpsa
+  on lcavol and lcavol on lpsa. Display both regression lines on the plot. 
+  At what point do the two lines intersect?
+```{r}
+lm5.1 <- lm(lpsa ~ lcavol, data=prostate)
+lm5.2 <- lm(lcavol ~ lpsa, data=prostate)
+
+plot(lpsa ~ lcavol, data=prostate)
+abline(lm5.1, col="red")
+abline(lm5.2, col="blue")
+```
+  Las rectan son paralelas, pero cada recta tiene unos ejes distintos, aqui 
+  estamos representando las dos rectas respecto a los ejes lpsa against lcavol.
   
   
   
   
   
   
+## 6.
+  Thirty samples of cheddar cheese were analyzed for their content of acetic 
+  acid, hydrogen sulfide and lactic acid. Each sample was tasted and scored by a
+  panel of judges and the average taste score produced. Use the cheddar data to 
+  answer the following:
+  
+  (a) Fit a regression model with taste as the response and the three chemical 
+  contents as predictors. Report the values of the regression coefficients.
   
   
+  (b) Compute the correlation between the fitted values and the response. Square
+  it. Identify where this value appears in the regression output.
+  
+  
+  (c) Fit the same regression model but without an intercept term. What is the 
+  value of R2 reported in the output? Compute a more reasonable measure of the 
+  good- ness of fit for this example.
+  
+  
+  (d) Compute the regression coefficients from the original fit using the QR 
+  decomposition showing your R code.
+  
+## 7.
+  An experiment was conducted to determine the effect of four factors on the 
+  resistivity of a semi-conductor wafer. The data is found in wafer where each 
+  of the four factors is coded as − or + depending on whether the low or the 
+  high setting for that factor was used. Fit the linear model 
+  resist ~ x1 + x2 + x3 + x4.
+  
+  (a) Extract the X matrix using the model.matrix function. Examine this to 
+  determine how the low and high levels have been coded in the model.
+  
+  
+  (b) Compute the correlation in the X matrix. Why are there some missing values
+  in the matrix?
+  
+  
+  (c) What difference in resistance is expected when moving from the low to the
+  high level of x1?
+  
+  
+  (d) Refit the model without x4 and examine the regression coefficients and 
+  standard errors? What stayed the the same as the original fit and what changed?
+  
+  
+  (e) Explain how the change in the regression coefficients is related to the 
+  correlation matrix of X.
+  
+  
+  
+  
+  
+# Ejercicios Carmona
+
+#1. 
   
   
   
