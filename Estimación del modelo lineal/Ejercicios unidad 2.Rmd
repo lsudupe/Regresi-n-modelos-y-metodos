@@ -12,11 +12,12 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r setup, echo = FALSE, message = FALSE}
 # Función para cargar todos los paquetes necesarios
 LoadLibraries <- function() {
-  myLibraries <- c("faraway")
+  myLibraries <- c("faraway", "ggplot2", "reshape2")
   invisible(lapply(myLibraries, library, character.only = TRUE))
 }
 LoadLibraries()
 ```
+
 
 # Ejercicios faraway
 
@@ -128,34 +129,60 @@ summary(lm4)
 ```
 ```{r}
 #Error estandar de los residups
-summary(lm4)$sigma
+res4.1 <- summary(lm4)$sigma
 
 #R^2, coeficiente de determinación
-summary(lm4)$r.squared
+coef4.1 <- summary(lm4)$r.squared
 ```
   . Now add lweight, svi, lbph, age, lcp, pgg45 and gleason to the model one at 
   a time. For each model record the residual standard error and the R2
 ```{r}
 lm4.2 <- update(lm4,. ~. + lweight)
+res4.2 <- summary(lm4.2)$sigma
+coef4.2 <- summary(lm4.2)$r.squared
 
 lm4.3 <- update(lm4.2,. ~. + svi)
+res4.3 <- summary(lm4.3)$sigma
+coef4.3 <- summary(lm4.3)$r.squared
 
 lm4.4 <- update(lm4.3,. ~. + lbph)
+res4.4 <- summary(lm4.4)$sigma
+coef4.4 <- summary(lm4.4)$r.squared
 
 lm4.5 <- update(lm4.4,. ~. + age)
+res4.5 <- summary(lm4.5)$sigma
+coef4.5 <- summary(lm4.5)$r.squared
 
 lm4.6 <- update(lm4.5,. ~. + lcp)
+res4.6 <- summary(lm4.6)$sigma
+coef4.6 <- summary(lm4.6)$r.squared
 
 lm4.7 <- update(lm4.6,. ~. + pgg45)
+res4.7 <- summary(lm4.7)$sigma
+coef4.7 <- summary(lm4.7)$r.squared
 
 lm4.8 <- update(lm4.7,. ~. + gleason)
+res4.8 <- summary(lm4.8)$sigma
+coef4.8 <- summary(lm4.8)$r.squared
 
- 
+
+reserror <- c(res4.1, res4.2, res4.3, res4.4, res4.5, res4.6, res4.7, res4.8)
+coef <- c(coef4.1, coef4.2, coef4.3, coef4.4, coef4.5, coef4.6, coef4.7, coef4.8)
+variables <- (1:8)
+
+
 ```
   
-  
-  
   . Plot the trends in these two statistics.
+```{r}
+data <- data.frame(variables, reserror, coef)
+
+data <- melt(data, id="variables")
+
+ggplot(data=data, aes(x=variables, y=value, colour=variable)) +
+  geom_line()
+        
+```
   
   
   
