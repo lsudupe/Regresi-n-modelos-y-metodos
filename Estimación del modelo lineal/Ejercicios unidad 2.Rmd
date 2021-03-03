@@ -200,10 +200,6 @@ abline(lm5.2, col="blue")
   estamos representando las dos rectas respecto a los ejes lpsa against lcavol.
   
   
-  
-  
-  
-  
 ## 6.
   Thirty samples of cheddar cheese were analyzed for their content of acetic 
   acid, hydrogen sulfide and lactic acid. Each sample was tasted and scored by a
@@ -212,8 +208,11 @@ abline(lm5.2, col="blue")
   
   (a) Fit a regression model with taste as the response and the three chemical 
   contents as predictors. Report the values of the regression coefficients.
-  
-  
+```{r}
+lm6 <- lm(taste ~ Acetic + H2S + Lactic, data=cheddar)
+coefcheddar <- lm6$coefficients
+coefcheddar
+```
   (b) Compute the correlation between the fitted values and the response. Square
   it. Identify where this value appears in the regression output.
   
