@@ -27,7 +27,7 @@ LoadLibraries()
   status, income and verbal score as predictors. Present the output.
 ```{r}
 #ajustamos los datos al modelo
-lm <- lm(gamble ~ sex + status + income + verbal, data=teengamb )
+lm <- lm(gamble ~ sex + status + income + verbal, data=teengamb)
 lmsum <- summary(lm)
 lmsum
 ```
@@ -213,14 +213,24 @@ lm6 <- lm(taste ~ Acetic + H2S + Lactic, data=cheddar)
 coefcheddar <- lm6$coefficients
 coefcheddar
 ```
+  
   (b) Compute the correlation between the fitted values and the response. Square
   it. Identify where this value appears in the regression output.
-  
+```{r}
+corr <- cor(cheddar$taste, lm6$fitted.values)^2
+corr
+summary(lm6)
+```
+  Es el valor de `Multiple R-squared`
   
   (c) Fit the same regression model but without an intercept term. What is the 
   value of R2 reported in the output? Compute a more reasonable measure of the 
-  good- ness of fit for this example.
-  
+  good-ness of fit for this example.
+```{r}
+lm6.2 <- lm(taste ~ 0 + Acetic + H2S + Lactic, data=cheddar)
+summary(lm6.2)
+```
+  El valor de R-squared es `multiple R-squared = 0.8877`
   
   (d) Compute the regression coefficients from the original fit using the QR 
   decomposition showing your R code.
