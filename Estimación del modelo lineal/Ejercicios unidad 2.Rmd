@@ -240,29 +240,51 @@ summary(lm6.2)
   resistivity of a semi-conductor wafer. The data is found in wafer where each 
   of the four factors is coded as − or + depending on whether the low or the 
   high setting for that factor was used. Fit the linear model 
-  resist ~ x1 + x2 + x3 + x4.
+  `resist ~ x1 + x2 + x3 + x4`.
+```{r}
+lm7 <- lm(resist ~ x1 + x2 + x3 + x4, data=wafer)
+head(wafer, package="faraway")
+```
   
   (a) Extract the X matrix using the model.matrix function. Examine this to 
   determine how the low and high levels have been coded in the model.
-  
+```{r}
+matrix7 <- model.matrix(lm7)
+matrix7
+```
+  Vemos que los valores `-` se han asignado a `0`y los `+`a `1`.
   
   (b) Compute the correlation in the X matrix. Why are there some missing values
   in the matrix?
-  
+```{r}
+cor(matrix7)
+cor
+```
+  Esto se puede deber a que los valores del ìntercept`son constantes para todos
+```{r}
+cor2 <- cor(matrix7[,2:5])
+cor2
+```
   
   (c) What difference in resistance is expected when moving from the low to the
   high level of x1?
-  
+```{r}
+summary(lm7)
+```
+  Una diferencia de `25.76`unidades
   
   (d) Refit the model without x4 and examine the regression coefficients and 
   standard errors? What stayed the the same as the original fit and what changed?
-  
+```{r}
+lm7.2 <- lm(resist ~ x1 + x2 + x3, data=wafer)
+summary(lm7.2)
+```
+  Los coeficientes de las variables `x1,x2 y x3` se mantienen iguales. Tenemos
+  un `Multiple R-squared`algo menor. El `intercept` estimado tambien cambia 
+  ligeramente, pues ya no tiene en cuenta la dependencia de la variable `x4`
   
   (e) Explain how the change in the regression coefficients is related to the 
   correlation matrix of X.
-  
-  
-  
   
   
 # Ejercicios Carmona
