@@ -289,7 +289,38 @@ summary(lm7.2)
   
 # Ejercicios Carmona
 
-#1. 
+##1. 
+  Una variable Y toma los valores y1, y2 y y3 en función de otra variable X con
+  los valores x1, x2 y x3. Determinar cuales de los siguientes modelos son 
+  lineales y encontrar, en su caso, la matriz de diseño para x1 = 1, x2 = 2 y 
+  x3 = 3.
+  
+  a) $$y_{i} = \beta_{0} + \beta_{1}x_{i} + \beta_{2}(x_{i}^2 - 1) + \epsilon_{i}$$
+  
+  Es lineal
+```{r}
+matriza <- matrix(c(1,1,(1^2 -1),1,2,(2^2 -1),1,3,(3^2 -1)), nrow=3, byrow=TRUE)
+matriza
+```
+  
+  b) $$y_{i} = \beta_{0} + \beta_{1}x_{i} + \beta_{2}e^{xi} + \epsilon_{i}$$
+  
+  Es lineal
+```{r}
+matrizb <- matrix(c(1,1,exp(1),1,2,exp(2),1,3,exp(3)), nrow=3, byrow=TRUE)
+matrizb
+```
+ 
+ c) $$y_{i} = \beta_{1}x_{i}(\beta_{2}tan(xi)) + \epsilon_{i}$$
+  
+  No es lineal
+  
+  
+## 2.
+  
+  
+  
+  
   
   
   
