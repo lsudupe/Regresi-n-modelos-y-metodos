@@ -1,0 +1,244 @@
+---
+title: "Inferencia ejercicios"
+author: "Laura Sudupe Medinilla"
+date: "19/3/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+
+```{r setup, echo = FALSE, message = FALSE}
+# Función para cargar todos los paquetes necesarios
+LoadLibraries <- function() {
+  myLibraries <- c("faraway", "ggplot2", "reshape2", "ellipse", "dplyr", "tidyverse")
+  invisible(lapply(myLibraries, library, character.only = TRUE))
+}
+LoadLibraries()
+```
+
+
+# Ejercicios faraway
+
+## 1. (Ejercicio 1 cap. 3 pág. 48)
+
+For the prostate data, fit a model with lpsa as the response and the other 
+variables as predictors:
+```{r}
+lm1 <- lm(lpsa  ~ ., data = prostate)
+summary(lm1)
+```
+
+(a) Compute 90 and 95% CIs for the parameter associated with age. Using just 
+these intervals,what could we have deduced about the p-value for age in the 
+regression summary?
+```{r}
+confint(lm1, level=0.9)
+confint(lm1, level=0.95)
+```
+Cuando calculamos el intervalo de confianza al 90%, no esta incluido el 0. Al
+calcularlo al 95%, mas restrictivo, el 0 si esta incluido. En el primer caso 
+entonces diremos que el parametro `age` es significativo pero para el segundo
+caso no. En el `summary()` del modelo vemos que su p-value es 0.08229, lo que
+reafirma lo visto con los intervalos.
+
+
+(b) Compute and display a 95% joint confidence region for the parameters 
+associated with age and lbph. Plot the origin on this display. The location of 
+the origin on the display tells us the outcome of a certain hypothesis test. 
+State that test and its outcome.
+
+Tenemos que calcular la región de confianza conjunta de los parametros `age` y 
+`lbph`. La hipotesis a estudiar;
+
+$$H_0: \beta_{age}=\beta_{lbph}=0$$
+```{r}
+plot(ellipse(lm1, c("age","lbph")), type="l", main = "región de confianza conjunta")
+points(coef(lm1)["age"], coef(lm1)["lbph"])
+points(0,0)
+abline(v = confint(lm1)["age",], lty=2)
+abline(h = confint(lm1)["lbph",], lty=2)
+```
+El centro del elipse es la estimación puntual de los parametros. El origen esta
+cerca de salirse de la elipse, por lo tanto, no tenemos evidencias para rechazar 
+la hipotesis nula.
+
+(c) In the text, we made a permutation test corresponding to the F-test for the
+significance of all the predictors. Execute the permutation test corresponding 
+to the t-test for age in this model.
+(Hint: summary(g)$coef[4,3] gets you the t-statistic you need if the model is 
+called g.)
+
+Tenemos que hacer un contraste de hipotesis
+
+$$H_0: \beta_{age}=0$$
+Y no igual a 0
+
+Con el test, vamos a obtener un valor similar al p-value calculado para la 
+variable `age`. Estimaremos varias veces el modelo e iremos guardando los valores
+t-value y p-value.
+```{r}
+#Para el test de permutaciones establecemos una semilla de aleatorizacion
+set.seed(123)
+
+t_value <- summary(lm1) %>% coef() %>% .['age', 't value']
+
+#Funcion para permutaciones
+permute_tmod <- function(nsims) {
+    map_dbl(1:nsims,
+            ~ lm(sample(lpsa) ~ ., data = prostate) %>%
+            summary() %>%
+            coef() %>%
+            .['age', 't value'])
+}
+mean(abs(permute_tmod(1000)) > abs(t_value))
+```
+(d) Remove all the predictors that are not significant at the 5% level. Test 
+this model against the original model. Which model is preferred?
+```{r}
+lm1.2 <- lm(lpsa ~ lcavol + lweight + svi, data = prostate)
+anova(lm1, lm1.2)
+```
+No podemos rechazar la hipotesis nula porque el valor es superior a 0.05. No hay
+mucha diferencia entre modelos.
+
+
+## 2. (Ejercicio 2 cap. 3 pág. 49)
+
+Thirty samples of cheddar cheese were analyzed for their content of acetic acid,
+hydrogen sulfide and lactic acid. Each sample was tasted and scored by a panel 
+of judges and the average taste score produced. Use the cheddar data to answer 
+the following:
+
+(a) Fit a regression model with taste as the response and the three chemical 
+contents as predictors. Identify the predictors that are statistically 
+significant at the 5% level.
+```{r}
+lm2 <- lm(taste ~ ., data = cheddar)
+summary(lm2)
+```
+Los predictores estadisticamente significativos son `H2S` y `Lactic`.
+En el `summary()` podemos ver el contraste de hipotesis y el p-value por cada
+estadistico t, indicando con alpha=5% si la hipotesis se rechaza o no.
+
+$$
+H_0: \beta_{variable} = 0
+$$
+(b) Acetic and H2S are measured on a log scale. Fit a linear model where all 
+three predictors are measured on their original scale. Identify the predictors 
+that are statistically significant at the 5% level for this model.
+```{r}
+lm2.2 <- lm(taste ~ I(exp(Acetic)) + exp(H2S) + Lactic, data = cheddar)
+summary(lm2.2)
+```
+Aqui podemos ver que el único predictor significativo es `Lactic`
+
+(c) Can we use an F-test to compare these two models? Explain. Which model 
+provides a better fit to the data? Explain your reasoning.
+
+No. Las variables tienen que ser las mismas. Para decir que modelo se ajusta mejor
+a los datos podemos mirar el valor de R^2 de cada modelo
+```{r}
+summary(lm2)$r.squared
+summary(lm2.2)$r.squared
+```
+(d) If H2S is increased 0.01 for the model used in (a), what change in the taste
+would be expected?
+
+Multiplicamos el coeficiente de esta variable por 0.01
+```{r}
+coef(lm2)[3]*0.01
+```
+Vemos un aumento de 0.039 en la respuesta `taste`
+
+(e) What is the percentage change in H2S on the original scale corresponding to 
+an additive increase of 0.01 on the (natural) log scale?
+
+## 3. (Ejercicio 3 cap. 3 pág. 49)
+Using the teengamb data, fit a model with gamble as the response and the other 
+variables as predictors.
+```{r}
+lm3 <- lm(gamble ~ ., data = teengamb)
+```
+
+(a) Which variables are statistically significant at the 5% level?
+```{r}
+summary(lm3)
+```
+`sex` e `income`.
+
+(b) What interpretation should be given to the coefficient for sex?
+
+Con el coeficiente medimos el aumento de la prediccion de la variable explicada 
+por cada aumento de unidad de este manteniendo constantes los demas predictores.
+O es para el hombre y 1 para la mujer, en este caso. Si multiplicamos 0 por el 
+coeficiente de Sex obtenemos 0, que significa que no hay variación. 
+
+En cambio, si tomamos las mujeres obtendríamos -22.11. Por lo tanto, una 
+disminución de 22.11 en la variable respuesta.
+
+(c) Fit a model with just income as a predictor and use an F-test to compare it 
+to the full model.
+
+Este es nuestro contraste de hipotesis
+$$H_0: \beta_{sex} = \beta_{status} = \beta_{verbal}=0$$
+Si no rechazamos la hipotesis nula, entonces el modelo con solo `income` como
+predictora es mejor que el modelo inicial con todas las variables como 
+predictoras
+
+```{r}
+lm3.1 <- lm(gamble ~ income, data = teengamb)
+anova(lm3, lm3.1)
+```
+Tenemos un p-value de 0.01177 por lo que rechazamos la hipotesis nula. El modelo 
+con todas variables se ajusta mejor
+
+
+## 4. (Ejercicio 4 cap. 3 pág. 49)
+
+Using the sat data:
+(a) Fit a model with total sat score as the response and expend, ratio and 
+salary as predictors.
+Test the hypothesis that betasalary = 0. 
+Test the hypothesis that betasalary = betaratio = betaexpend = 0. 
+Do any of these predictors have an effect on the response?
+
+```{r}
+lm4 <- lm(total ~ expend + ratio + salary, data = sat)
+summary(lm4)
+```
+En el caso de la primera hipotesis, $\beta_{salary} = 0$, tenemos que mirar en 
+`summary()` el contraste individual de la variable `salary` que obtenemos con el
+t-test. El coeficiente no sera significativo, por lo tanto diremos que esta 
+variable no es estadisticamente significativa, con una confianza del 95%
+
+En este test, el valor del estadístico F es de 4.066, dejando un p-valor de 
+0.01209 que implica rechazar la $\beta_{salary} = \beta_{ratio} = \beta_{expend} =0$
+
+
+(b) Now add takers to the model. Test the hypothesis that takers = 0. Compare 
+this model to the previous one using an F-test. Demonstrate that the F-test and 
+t-test here are equivalent.
+```{r}
+lm4.2 <- lm(total ~ 1, data = sat)
+anova(lm4.2, lm4)
+```
+Vemos que el resultado con el t-test rechaza la hipotesis nula, entonces, 
+`takers` es significativa.
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

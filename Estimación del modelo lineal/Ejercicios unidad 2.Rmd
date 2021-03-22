@@ -2,12 +2,12 @@
 title: "Estimación del modelo lineal ejercicios"
 author: "Laura Sudupe Medinilla"
 date: "1/3/2021"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+
 
 ```{r setup, echo = FALSE, message = FALSE}
 # Función para cargar todos los paquetes necesarios
@@ -113,6 +113,7 @@ lmlog2$coefficients
  La relación entre los coeficientes es la siguiente
  
  $$\log(wage) = 4.65 + 0.09educ + 0.02expe$$
+ 
   c)Give an interpretation to the regression coefficient for years of education.
   Which interpretation is more natural?
   No entiendo lo que se me pide
@@ -238,7 +239,7 @@ summary(lm6.2)
 ## 7.
   An experiment was conducted to determine the effect of four factors on the 
   resistivity of a semi-conductor wafer. The data is found in wafer where each 
-  of the four factors is coded as − or + depending on whether the low or the 
+  of the four factors is coded as minus or + depending on whether the low or the 
   high setting for that factor was used. Fit the linear model 
   `resist ~ x1 + x2 + x3 + x4`.
 ```{r}
@@ -252,7 +253,7 @@ head(wafer, package="faraway")
 matrix7 <- model.matrix(lm7)
 matrix7
 ```
-  Vemos que los valores `-` se han asignado a `0`y los `+`a `1`.
+  Vemos que los valores minus se han asignado a `0`y los `+`a `1`.
   
   (b) Compute the correlation in the X matrix. Why are there some missing values
   in the matrix?
@@ -321,9 +322,9 @@ matrizb
   
   
 ## 2.
-  Cuatro objetos cuyos pesos exactos son β1, β2, β3 y β4 han sido pesados en una 
-  balanza de platillos.
-  Hallar las estimaciones de cada βi y de la varianza del error.
+  Cuatro objetos cuyos pesos exactos son beta1, beta2, beta3 y beta4 han sido
+  pesados en una  balanza de platillos.
+  Hallar las estimaciones de cada betai y de la varianza del error.
 ```{r}
 #Creamos la matriz de diseño
 X<- matrix(c(1,1,1,1,
