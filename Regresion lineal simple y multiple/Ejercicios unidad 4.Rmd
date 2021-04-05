@@ -1,0 +1,476 @@
+---
+title: "Regresión lineal simple y multiple"
+author: "Laura Sudupe Medinilla"
+date: "3/4/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+
+```{r setup, echo = FALSE, message = FALSE}
+# Función para cargar todos los paquetes necesarios
+LoadLibraries <- function() {
+  myLibraries <- c("faraway", "ggplot2", "reshape2")
+  invisible(lapply(myLibraries, library, character.only = TRUE))
+}
+LoadLibraries()
+```
+
+
+# Ejercicios de Carmona
+
+## 1. 
+
+Hallar la recta de regresión simple de la variable respuesta raíz cuadrada de la velocidad sobre la
+variable regresora densidad con los datos de la tabla 1.1 del capítulo 1.
+
+Comprobar las propiedades del ejercicio 6.4 sobre las predicciones $\hat y_i = \hat \beta_0+\hat \beta_1x_i$ y los residuos $e_i=y_i-\hat y_i$ para estos datos.
+
+Los datos son
+```{r}
+library(knitr)
+dens <- c(12.7,17.0,66.0,50.0,87.8,81.4,75.6,66.2,81.1,62.8,77.0,89.6,
+18.3,19.1,16.5,22.2,18.6,66.0,60.3,56.0,66.3,61.7,66.6,67.8)
+vel <- c(62.4,50.7,17.1,25.9,12.4,13.4,13.7,17.9,13.8,17.9,15.8,12.6,
+51.2,50.8,54.7,46.5,46.3,16.9,19.8,21.2,18.3,18.0,16.6,18.3)
+rvel <- sqrt(vel)
+df <- data.frame(densidad = dens, rvel =rvel)
+kable(df)
+```
+
+
+Algunos cálculos (estimación "a mano" de la regresión lineal):
+
+```{r}
+i <- c(1:length(dens))
+x_i <- dens
+y_i <- rvel
+x_i_2 <- x_i^2
+x_i_y_i <- x_i*y_i
+
+# Cálculo beta_1
+
+b_1 <- (sum(x_i_y_i) - mean(x_i) * sum(y_i))/(sum(x_i_2) - 1/length(x_i)*sum(x_i)^2)
+
+# Cálculo beta_0 (intercept)
+
+b_0 <- mean(y_i) - b_1 * mean(x_i)
+
+b_0;b_1
+```
+
+Comprobamos con la estimación del modelo de regresión lineal simple proporcionada por R:
+
+```{r}
+lmod <- lm(rvel ~ dens)
+summary(lmod)
+sum(lmod$residuals)
+```
+
+Vemos que las estimaciones de las betas son correctas.
+
+a) La suma de los residuos es cero: $\sum e_i=0$
+
+Empezamos calculando la estimación, a partir de la recta 
+
+$$
+y = 8.0898 - 0.0566x
+$$
+
+```{r}
+estimacion <- b_0 + b_1 * x_i
+error <- y_i - estimacion
+df_error <- data.frame(x_i = dens, y_i=rvel, y_estimada = estimacion, error = error)
+kable(df_error)
+```
+
+
+Y obtenemos que la suma de errores es 0
+
+```{r}
+sum(error)
+```
+
+
+b) $\sum y_i=\sum \hat y_i$
+
+Para hacer esta comprobación sumamos los valores observados de la raíz cuadrada de la velocidad ($y_i$) y por otro lado sumamos las estimaciones proporcionadas por el modelo de regresion lineal simple ($\hat y_i$):
+
+Se observa que los dos valores son  iguales y por lo tanto se cumple la igualdad
+
+```{r}
+sum(y_i)
+sum(estimacion)
+```
+
+c) La suma de los residuos ponderada por los valores de la variable regresora es 0: $\sum x_ie_i=0$
+
+Calculamos esta suma y da 0:
+
+```{r}
+sum(x_i*error)
+```
+
+d) La suma de los residuos ponderada por las predicciones de los valores observados es 0: $\sum \hat y_i e_i=0$
+
+Se calcula y da 0:
+
+```{r}
+sum(estimacion*error)
+```
+
+Calcular la estimación de $\sigma^2$ 2 y, a partir de ella, las estimaciones de las desviaciones estándar de los
+estimadores de los parámetros $\hat \beta_0$ y $\hat \beta_1$
+
+```{r}
+SCR <- sum(error^2)
+sigma_2 <- SCR/(length(x_i)-2)
+sigma <- sqrt(sigma_2)
+sigma # coincide con RSE del summary del modelo
+
+var_b_1 <- sigma_2*(1/sum(x_i^2))
+sqrt(var_b_1)
+```
+
+Escribir los intervalos de confianza para los parámetros con un nivel de confianza del 95 %.
+
+Los intervalos de confianza para los parámetros los calculamos a partir de la formula:
+
+$$
+\hat \beta_0 \pm t_{n-1}(\alpha) \hat \sigma\sqrt\frac{1}{\sum x_i^2}
+$$
+$$
+\hat \beta_1 \pm t_{n-1}(\alpha) \hat \sigma\sqrt\frac{1}{\sum x_i^2}
+$$
+
+```{r}
+recta.resumen <- summary(lmod)
+cov.beta<-round(recta.resumen$sigma^2*recta.resumen$cov.unscaled,6)
+cov.beta
+
+coef.recta<-coef(lmod)
+
+names(coef.recta)<-NULL # Truco para utilizar mejor los coeficientes
+coef.recta
+ee0<-sqrt(cov.beta[1,1])
+ee1<-sqrt(cov.beta[2,2])
+
+# IC 95% para B_0
+c(coef.recta[1]+qt(0.025,22)*ee0,coef.recta[1]+qt(0.975,22)*ee0)
+
+# IC 95% para B_1
+c(coef.recta[2]+qt(0.025,22)*ee1,coef.recta[2]+qt(0.975,22)*ee1)
+```
+
+Construir la tabla para la significación de la regresión y realizar dicho contraste.
+
+
+$$
+H_0: \beta_1 = 0
+$$
+
+
+Debemos calcular el estadístico de contraste
+
+$$
+F_{1, n-2} = \frac{SCR_H-SCR}{SCR/(n-2)}= (n-2)\frac{r^2}{1-r^2}
+$$
+y seguidamente
+
+$$
+t_{n-2} = \sqrt F = r\frac{\sqrt {n-2}}{1-r^2}
+$$
+teniendo que
+
+$$
+R^2 = r^2 = 1\frac{(1-r^2)S_y}{S_y}
+$$
+
+Calculamos $R^2 = 1- SCR/S_y$
+```{r}
+mrvel <- mean(rvel)
+R2 <- 1 - (SCR/sum((rvel - mrvel)^2)) 
+R2
+```
+
+Por lo tanto
+
+```{r}
+F_stat <- (length(rvel)-2)*(R2/(1-R2))
+t_stat <- sqrt(F_stat)
+F_stat;t_stat
+```
+```{r}
+df(F_stat, 1, 22)
+dt(t_stat, length(rvel-2))
+```
+El p-valor es prácticamente 0 así que diremos que en este contraste de significación de la regresión rechazamos $H_0$ y por tanto la variable dens sí que explica la variable respuesta (se ajusta bien a los datos).
+
+Hallar el intervalo de la predicción de la respuesta media cuando la densidad es de 50 vehículos por
+km. Nivel de confianza: 90 %.
+
+La fórmula a utilizar es
+
+$$
+\hat y_0 \pm t_{n-1}(\alpha)\hat\sigma \sqrt {\frac{1}{n}+\frac{(x_0-\bar x)^2}{S_x}}
+$$
+
+La $\hat y_0$ es 5.259
+
+```{r}
+y_0 <- predict(lmod, data.frame(dens=50))
+y_0
+```
+
+El intervalo de confianza al 90% es [5.163, 5.354]
+
+```{r}
+t_stat_90 <- qt(0.05, length(rvel)-1)
+S_x <- sum((dens-mean(dens))^2)
+raiz <- sqrt(1/length(rvel) + (50-mean(dens))^2/S_x)
+y_0 + t_stat_90 * sigma * raiz
+y_0 - t_stat_90 * sigma * raiz
+```
+
+## 3. 
+
+Se admite que una persona es proporcionada si su altura en cm es igual a su peso en kg más 100.
+En términos estadísticos si la recta de regresión de Y (altura) sobre X (peso) es
+Y = 100 + X
+Contrastar, con un nivel de significación $\alpha = 0.05$, si se puede considerar válida esta hipótesis a
+partir de los siguientes datos que corresponden a una muestra de mujeres jóvenes.
+
+Razonar la bondad de la regresión y todos los detalles del contraste.
+
+```{r}
+x <- c(55, 52, 65, 54, 46, 60, 54, 52, 56, 65, 52, 53, 60)
+x <- 100 + x
+y <- c(164, 164, 173, 163, 157, 168, 171, 158, 169, 172, 168, 160, 172)
+```
+
+Estimamos el modelo de regresión lineal simple:
+
+```{r}
+lmod3 <- lm(y ~ 0 + x)
+summary(lmod3)
+```
+
+Habría que contrastar que $H_0: \beta_1 = 1$. Rechazaremos $H_0$ si:
+
+$$
+\left| \frac{\hat \beta_1-b_1}{(\hat \sigma^2/S_x)^{1/2}} \right| >t_{n-2}(\alpha)
+$$
+
+```{r}
+B1 <- summary(lmod3)$coefficients[1]
+b1 <- 1
+S_x <- sum((x-mean(x))^2)
+contrast <- (B1 - b1)/((3.608^2/S_x)^(1/2))
+abs(contrast) > abs(qt(0.025, length(x)-2))
+```
+
+No se cumple la desigualdad así que asumimos $H_0$ y diremos que el pendiente es 1. Asímismo, podemos concluir que se cumple que $Y=100 + X$.
+
+
+Además, el ajuste de esta recta es bastante bueno ya que la variable X es muy significativa en el modelo, como se ve en el summary, y el $R^2$ nos indica que la variabilidad explicada es alta.
+
+
+## 5.  (Ejercicio 8.4 del Capítulo 8 página 157)
+Se dispone de los siguientes datos sobre diez empresas fabricantes de productos de limpieza doméstica:
+
+```{r}
+empresa <- c(1:10)
+V <- c(60, 48, 42, 36, 78, 36, 72, 42, 54, 90)
+IP <- c(100, 110, 130, 100, 80, 80, 90, 120, 120, 90)
+PU <- c(1.8, 2.4, 3.6, 0.6, 1.8, 0.6, 3.6, 1.2, 2.4, 4.2)
+df <- data.frame(empresa = empresa, V = V, IP = IP, PU = PU)
+kable(df)
+```
+
+En el cuadro anterior, V son las ventas anuales, expresadas en millones de euros, IP es un índice
+de precios relativos (Precios de la empresa/Precios de la competencia) y PU son los gastos anuales
+realizados en publicidad y campañas de promoción y difusión, expresados también en millones de
+euros.
+
+Tomando como base la anterior información:
+
+1) Estimar el vector de coeficientes $\beta = (\beta_0, \beta_1, \beta_2)'$ del modelo
+$$
+V_i = \beta_0 + \beta_1IP_i + \beta_2PU_i+\epsilon_i
+$$
+```{r}
+lmod5 <- lm(V ~ IP + PU, data = df)
+summary(lmod5)
+```
+
+Los coeficientes son `r summary(lmod5)$coefficients[1:3]` respectivamente.
+
+2) Estimar la matriz de varianzas-covarianzas del vector $\hat\beta$
+
+```{r}
+sum <- summary(lmod5)
+cov.beta<-round(sum$sigma^2*sum$cov.unscaled, 6)
+cov.beta
+```
+
+3) Calcular el coeficiente de determinación.
+
+```{r}
+R2 <- sum$r.squared 
+R2
+```
+
+
+# Ejercicios de Faraway
+
+## 1. 
+
+For the prostate data, fit a model with lpsa as the response and the other variables as predictors:
+(a) Suppose a new patient with the following values arrives. Predict the lpsa for this patient along with an appropriate 95% CI.
+
+```{r}
+library(faraway)
+lmod1 <- lm(lpsa ~ ., data = prostate)
+summary(lmod1)
+
+## prediction
+predict(lmod1, new = data.frame(lcavol = 1.44692, lweight = 3.62301, age = 65, lbph = 0.3001, 
+                                svi = 0, lcp = -0.79851, gleason = 7, pgg45 = 15), 
+        interval="prediction")
+```
+
+El intervalo es [0.965, 3.813]. Se utiliza la opción **interval = "prediction"**.
+
+(b) Repeat the last question for a patient with the same values except that he is age 20. Explain
+why the CI is wider.
+
+```{r}
+## prediction
+predict(lmod1, new = data.frame(lcavol = 1.44692, lweight = 3.62301, age = 20, lbph = 0.3001, 
+                                svi = 0, lcp = -0.79851, gleason = 7, pgg45 = 15), 
+        interval="prediction")
+mean(prostate$age)
+```
+
+El intervalo en esta ocasión es más ancho ya que el valor de la edad está más alejado de la media y el cálculo tiene en cuenta este valor. En cambio, en el primer apartado el valor de la edad en la predicción era más cercano a la media de edad.
+
+(c) For the model of the previous question, remove all the predictors that are not significant at
+the 5% level. Now recompute the predictions of the previous question. Are the CIs wider or
+narrower? Which predictions would you prefer? Explain.
+
+```{r}
+lmod1c <- lm(lpsa ~ lcavol + lweight + svi, data = prostate)
+
+predict(lmod1c, new = data.frame(lcavol = 1.44692, lweight = 3.62301,
+                                 svi = 0),
+        interval="prediction")
+
+```
+
+En este modelo reducido no tenemos en cuenta la edad, entre otras variables y el intervalo de confianza es más estrecho en este modelo reducido. El nuevo modelo, sin las variables no significativas, proporciona una estimación con menos variabilidad (IC más pequeño) y por tanto más precisa. Depende del caso preferiremos un modelo u otro.
+
+## 2. 
+
+Using the teengamb data, fit a model with gamble as the response and the other variables as
+predictors.
+
+(a) Predict the amount that a male with average (given these data) status, income and verbal
+score would gamble along with an appropriate 95% CI.
+
+```{r}
+lmod2 <- lm(gamble ~ ., data = teengamb)
+summary(lmod2)
+
+male <- teengamb[teengamb$sex==0,]
+(x0 <- sapply(male[,1:4], mean))
+predict(lmod2, new=data.frame(t(x0)), interval="confidence")
+```
+
+(b) Repeat the prediction for a male with maximal values (for this data) of status, income and
+verbal score. Which CI is wider and why is this result expected?
+
+```{r}
+x1 <- sapply(male[,1:4], max)
+predict(lmod2, new=data.frame(t(x1)), interval="confidence")
+```
+
+El IC del primer apartado es notablemente más pequeño. Vuele a suceder que se está haciendo una predicción para valores extremos (máximo) de las variables. Sucede que la $\beta_i$ depende de $\bar X_i$. 
+
+(c) Fit a model with sqrt(gamble) as the response but with the same predictors. Now predict
+the response and give a 95% prediction interval for the individual in (a). Take care to give
+your answer in the original units of the response.
+
+```{r}
+lmod2c <- lm(I(sqrt(gamble)) ~ ., data = teengamb)
+summary(lmod2c)
+predict(lmod2c, new=data.frame(t(x0)), interval="confidence")^2
+```
+
+(d) Repeat the prediction for the model in (c) for a female with status = 20, income = 1, verbal
+= 10. Comment on the credibility of the result.
+
+```{r}
+predict(lmod2c, new=data.frame(sex=1, status=20, income=1, verbal=10), interval="confidence")
+```
+
+Sale negativo
+
+## 3.
+
+The snail dataset contains percentage water content of the tissues of snails grown under three
+different levels of relative humidity and two different temperatures.
+
+(a) Use the command xtabs(water ~ temp + humid, snail)/4 to produce a table of mean water content for each combination of temperature and humidity. Can you use this table to predict the water content for a temperature of 25◦C and a humidity of 60%? Explain.
+
+```{r}
+xtabs(water ~ temp + humid, snail)/4
+```
+
+Haría una estimación haciendo la media de los dos factores. Es decir, el punto 25ºC tendría un contenido de agua, para una humedad de 45 de (72.5+69.50)/2. Pero no queremos saber en humedad de 45 sino en humedad de 60%, que también es el punto medio entre 45 y 75%. Por tanto, repetimos el razonamiento y obtenemos un contenido de agua de 75.4375.
+
+(b) Fit a regression model with the water content as the response and the temperature and humidity as predictors. Use this model to predict the water content for a temperature of 25◦C and a humidity of 60%?
+
+```{r}
+lmod3 <- lm(water ~ temp + humid, data = snail)
+summary(lmod3)
+predict(lmod3, new = data.frame(temp = 25, humid = 60))
+```
+
+La cantidad de agua estimada a estos niveles de la resta de variables sería de 76.43681, valor que se parece al estimado en el apartado anterior aunque los niveles de las variables no son los mismos.
+
+(c) Use this model to predict water content for a temperature of 30◦C and a humidity of 75%?
+Compare your prediction to the prediction from (a). Discuss the relative merits of these two
+predictions.
+
+Este valor es mayor al estimado según las medias en el primer apartado, y esto puede deberse a que la relación entre estas variables no aumenta uniformemente. Evidentemente el coste de estimar un modelo par ahacer la predicción es más alto que el cálculo hecho en el primer apartado.
+
+```{r}
+predict(lmod3, new = data.frame(temp = 30, humid = 75))
+```
+
+(d) The intercept in your model is 52.6%. Give two values of the predictors for which this represents
+the predicted response. Is your answer unique? Do you think this represents a reasonable
+prediction?
+
+No sé hasta que punto tendría sentido considerar a 0 los valores de las variables (o tenerlos en negativo) ya que posiblemente nunca se observen esos valores en los datos. Podría causar predicciones sin mucho sentido.
+
+```{r}
+predict(lmod3, new = data.frame(temp = 0, humid = 0))
+```
+
+(e) For a temperature of 25◦C, what value of humidity would give a predicted response of 80%
+water content.
+
+```{r}
+predict(lmod3, new = data.frame(temp = 25, humid = 67.526))
+```
+  
+  
+  
+
+  
+  
+  
+  
